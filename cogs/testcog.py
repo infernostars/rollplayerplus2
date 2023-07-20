@@ -17,18 +17,27 @@ class TestCog(commands.GroupCog, group_name="testing"):
 
     # Use @commands.slash_command() for a slash-command
     # I recommend using only slash-commands for your bot.
-    @app_commands.command(name="ping", description="Sends Pong!")
+    @app_commands.command(name="ping")
     async def ping(self, interaction: discord.Interaction):
+        """
+        Replies with "pong".
+        """
         # Use `await interaction.response.send_message()` to send a message
         await interaction.response.send_message("pong")
 
-    @app_commands.command(name="testembed", description="Sends a test embed")
+    @app_commands.command(name="testembed")
     async def test_embed(self, interaction: discord.Interaction):
+        """
+        Testing embed for if things go successfully.
+        """
         embed = embed_template("Test embed", "Something went right!")
         await interaction.response.send_message(embeds=[embed])
 
-    @app_commands.command(name="testembed2", description="Sends a test error embed")
+    @app_commands.command(name="testembed2")
     async def test_embed2(self, interaction: discord.Interaction):
+        """
+        Testing embed for if things go wrong.
+        """
         error_embed = error_template("Oops! Something went wrong!")
         await interaction.response.send_message(embeds=[error_embed])
 

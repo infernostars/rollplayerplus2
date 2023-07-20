@@ -17,8 +17,16 @@ class NameGeneratorCog(commands.GroupCog, group_name="generators"):
     async def on_ready(self):
         log.info("Cog: name generator loaded")
 
-    @app_commands.command(name="greek-city", description="Generate greek city names! Capped at 1 and 25.")
+    @app_commands.command(name="greek-city")
     async def test_embed(self, interaction: discord.Interaction, amount: int = 10):
+        """
+        Generate greek city names! Capped between 1 and 25.
+
+        Parameters
+        -----------
+        amount: int
+            Amount of cities to generate, 1-25. Default is 10.
+        """
         amount = max(min(amount, 25), 1)
         embed = embed_template(f"""Greek city {plural("name", amount)} generated!""", "\n".join(greek_name_generator(amount)))
         await interaction.response.send_message(embeds=[embed])
