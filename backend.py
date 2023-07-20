@@ -1,9 +1,11 @@
 import configparser
+import os
 import random
 import sys
 import discord
 import logging
 import inflect
+import pathlib
 from colorlog import ColoredFormatter
 
 
