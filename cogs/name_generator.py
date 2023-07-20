@@ -1,6 +1,8 @@
 import discord, inflect
 from discord import app_commands
 from discord.ext import commands
+from os import listdir
+from os.path import splitext
 
 p = inflect.engine()
 
@@ -8,7 +10,7 @@ p = inflect.engine()
 from backend import log, embed_template, greek_name_generator, plural
 
 
-class NameGeneratorCog(commands.GroupCog, group_name="generators"):
+class NameGeneratorCog(commands.Cog, group_name="generators"):
     def __init__(self, client):
         self.client = client
 
@@ -17,10 +19,25 @@ class NameGeneratorCog(commands.GroupCog, group_name="generators"):
     async def on_ready(self):
         log.info("Cog: name generator loaded")
 
-    @app_commands.command(name="greek-city", description="Generate greek city names! Capped at 1 and 25.")
-    async def test_embed(self, interaction: discord.Interaction, amount: int = 10):
+    choices = listdir("../data/name_generator")
+
+    @app_commands.command(name="names", description="Generate randomized names! Capped at 1 and 25.")
+    @app_commands.choices(choices=
+                          #"greek_city.txt" -> Choice("Greek City","greek_city")
+                          [app_commands.Choice(name=splitext(i)[0].replace("_"," ").title(), value=splitext(i)[0]) for i in choices])
+    async def test_embed(self, interaction: discord.Interaction, kind: app_commands.Choice[str], amount: int = 10):
+        """
+        Generate randomized names! Capped between 1 and 25.
+
+        Parameters
+        -----------
+        kind: app_commands.Choice[str]
+            Type of name to generate. See options for what types exist.
+        amount: int
+            Amount of names to generate. 10 by default, but goes from 1-25.
+        """
         amount = max(min(amount, 25), 1)
-        embed = embed_template(f"""Greek city {plural("name", amount)} generated!""", "\n".join(greek_name_generator(amount)))
+        embed = embed_template(f""" {plural("name", amount)} generated!""", "\n".join(name_generator(kind, amount)))
         await interaction.response.send_message(embeds=[embed])
 
 
