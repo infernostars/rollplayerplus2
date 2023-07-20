@@ -7,7 +7,7 @@ from os.path import splitext
 p = inflect.engine()
 
 # Importing our custom variables/functions from backend.py
-from backend import log, embed_template, greek_name_generator, plural
+from backend import log, embed_template, name_generator, plural
 
 
 class NameGeneratorCog(commands.Cog, group_name="generators"):
