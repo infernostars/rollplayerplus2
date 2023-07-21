@@ -4,7 +4,7 @@ from discord.ext import commands
 
 p = inflect.engine()
 
-# Importing our custom variables/functions from backend.py
+# Importing our custom variables/functions from backend
 from backend import log, embed_template, greek_name_generator, plural
 
 
