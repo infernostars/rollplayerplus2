@@ -102,7 +102,7 @@ def name_init():
                 chain[lst][cur] = 1
 
         chain = dict()
-        with open(os.path.join(namebase), 'r', encoding='utf8') as f:  # open in readonly mode
+        with open(os.path.join("data/name_generator",namebase), 'r', encoding='utf8') as f:  # open in readonly mode
             lines = f.read().splitlines()
         for line in lines:
             grouping = [line[i:i + grouplen] for i in range(0, len(line), grouplen)]
