@@ -87,7 +87,7 @@ def error_template(description: str) -> discord.Embed:
     return _error_template.copy()
 
 
-def name_init():
+def name_init() -> list[dict]:
     """Initializes the name generation chains."""
     out = dict()
     for namebase in os.listdir("data/name_generator"):
@@ -133,12 +133,12 @@ def name_generator(kind: str, amount: int = 10) -> list[str]:
                 name += random.choices(list(chain[name[-chainlength:]].keys()),
                                        weights=list(chain[name[-chainlength:]].values()))[0]
                 if name[-1] == "#":
-                    if random.random() < len(name) / 16 - 1 / 16:  # end it
+                    if random.random() < len(name) / 18 - 1 / 18:  # end it
                         break
                     else:
                         name = name[:-1]  # try again
                 else:
-                    if random.random() < len(name) / 32 - 1 / 32:  # end it
+                    if random.random() < len(name) / 36 - 1 / 36:  # end it
                         name += "#"
                         break
                     else:
