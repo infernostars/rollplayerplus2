@@ -23,7 +23,7 @@ class NameGeneratorCog(commands.Cog, group_name="generators"):
 
     @app_commands.command(name="names")
     @app_commands.choices(kind=
-                          #"greek_city.txt" -> Choice("Greek City","greek_city")
+                          # "greek_city.txt" -> Choice("Greek City","greek_city")
                           [app_commands.Choice(name=splitext(i)[0].replace("_"," ").title(), value=splitext(i)[0]) for i in choices])
     async def test_embed(self, interaction: discord.Interaction, kind: app_commands.Choice[str], amount: int = 10):
         """
@@ -41,10 +41,5 @@ class NameGeneratorCog(commands.Cog, group_name="generators"):
                                "\n".join([name.title() for name in name_generator(kind.value, amount)]))
         await interaction.response.send_message(embeds=[embed])
 
-
-# The `setup` function is required for the cog to work
-# Don't change anything in this function, except for the
-# name of the cog (Example) to the name of your class.
 async def setup(client):
-    # Here, `Example` is the name of the class
     await client.add_cog(NameGeneratorCog(client))
