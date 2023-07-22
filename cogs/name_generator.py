@@ -1,14 +1,15 @@
-import discord, inflect
+# Importing our custom variables/functions from backend
+from backend.utils.logging import log
+from backend.utils.embed_templates import embed_template
+from backend.utils.name_generation import name_generator
+from backend.utils.text_manipulation import plural
+
+import discord
 from discord import app_commands
 from discord.ext import commands
 from os import listdir
 from os.path import splitext
 
-p = inflect.engine()
-
-# Importing our custom variables/functions from backend
-from backend.utils.logging import log
-from backend.utils.embed_templates import embed_template, error_template
 
 
 class NameGeneratorCog(commands.Cog, group_name="generators"):
@@ -25,7 +26,8 @@ class NameGeneratorCog(commands.Cog, group_name="generators"):
     @app_commands.command(name="names")
     @app_commands.choices(kind=
                           # "greek_city.txt" -> Choice("Greek City","greek_city")
-                          [app_commands.Choice(name=splitext(i)[0].replace("_"," ").title(), value=splitext(i)[0]) for i in choices])
+                          [app_commands.Choice(name=splitext(i)[0].replace("_", " ").title(), value=splitext(i)[0]) for
+                           i in choices])
     async def test_embed(self, interaction: discord.Interaction, kind: app_commands.Choice[str], amount: int = 10):
         """
         Generate randomized names! Capped between 1 and 25.
@@ -41,6 +43,7 @@ class NameGeneratorCog(commands.Cog, group_name="generators"):
         embed = embed_template(f""" {plural("name", amount)} generated!""",
                                "\n".join([name.title() for name in name_generator(kind.value, amount)]))
         await interaction.response.send_message(embeds=[embed])
+
 
 async def setup(client):
     await client.add_cog(NameGeneratorCog(client))
