@@ -86,9 +86,9 @@ def error_template(description: str) -> discord.Embed:
 
     return _error_template.copy()
 
+grouplen = 2  # length of groups made into chains - probably should add to the config but dont feel like it yet
 def name_init():
     """Initializes the name generation chains."""
-    grouplen = 2  # length of groups made into chains
     out = dict()
     for namebase in os.listdir("data/name_generator"):
         def increment(lst, cur):
@@ -105,11 +105,10 @@ def name_init():
         with open(os.path.join("data/name_generator",namebase), 'r', encoding='utf8') as f:  # open in readonly mode
             lines = f.read().splitlines()
         for line in lines:
-            grouping = [line[i:i + grouplen] for i in range(0, len(line), grouplen)]
-            last = "#"
-            for i in grouping:
+            last = "#"*grouplen
+            for i in line:
                 increment(last, i)
-                last = i
+                last = last[1:]+i
             increment(last, "#")
         out[os.path.splitext(namebase)[0]] = chain
     return out
@@ -121,18 +120,19 @@ def name_generator(kind: str, amount: int = 10) -> list[str]:
     chain = namechains[kind]
     out = []
     for _ in range(int(amount)):
-        name = random.choices(list(chain["#"].keys()), weights=list(chain["#"].values()))
+        name = "#"*grouplen
+        name += random.choices(list(chain[name].keys()), weights=list(chain[name].values()))[0] #same thing as in the loop, done once so it doesn't end with # immediately
         while True:
             while True:
-                name += random.choices(list(chain[name[-1]].keys()),
-                                weights=list(chain[name[-1]].values()))
+                name += random.choices(list(chain[name[-grouplen:]].keys()),
+                                weights=list(chain[name[-grouplen:]].values()))[0]
                 if name[-1] == "#":
-                    if random.random() < len(name) / 12 - 1 / 12:  # end it
+                    if random.random() < len(name) / 16 - 1 / 16:  # end it
                         break
                     else:
                         name = name[:-1]  # try again
                 else:
-                    if random.random() < len(name) / 24 - 1 / 24:  # end it
+                    if random.random() < len(name) / 32 - 1 / 32:  # end it
                         name += "#"
                         break
                     else:
