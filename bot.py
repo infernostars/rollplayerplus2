@@ -1,6 +1,7 @@
 import os
 import sys
-from backend import discord_token, sync_server, should_sync, log, presence
+from backend.config import discord_token, sync_server, should_sync, presence
+from backend.utils.logging import log
 import discord.utils
 from discord.ext import commands
 

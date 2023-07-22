@@ -3,7 +3,8 @@ from discord import app_commands
 from discord.ext import commands
 
 # Importing our custom variables/functions from backend
-from backend import log, embed_template, error_template
+from backend.utils.logging import log
+from backend.utils.embed_templates import embed_template, error_template
 
 
 class TestCog(commands.GroupCog, group_name="testing"):
