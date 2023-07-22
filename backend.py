@@ -133,7 +133,7 @@ def name_generator(kind: str, amount: int = 10) -> list[str]:
                 name += random.choices(list(chain[name[-chainlength:]].keys()),
                                        weights=list(chain[name[-chainlength:]].values()))[0]
                 if name[-1] == "#":
-                    if random.random() < len(name) / 18 - 1 / 18:  # end it
+                    if random.random() < len(name) / 24 - 1 / 24:  # end it
                         break
                     else:
                         name = name[:-1]  # try again
