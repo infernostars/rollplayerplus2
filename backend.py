@@ -86,7 +86,6 @@ def error_template(description: str) -> discord.Embed:
 
     return _error_template.copy()
 
-grouplen = 2  # length of groups made into chains - probably should add to the config but dont feel like it yet
 def name_init():
     """Initializes the name generation chains."""
     out = dict()
@@ -104,8 +103,10 @@ def name_init():
         chain = dict()
         with open(os.path.join("data/name_generator",namebase), 'r', encoding='utf8') as f:  # open in readonly mode
             lines = f.read().splitlines()
+            chain[0] = dict([tuple(i.split(':')) for i in lines[0].split('|')])
+            lines = lines[1:]
         for line in lines:
-            last = "#"*grouplen
+            last = "#"*int(chain[0]['chainlength'])
             for i in line:
                 increment(last, i)
                 last = last[1:]+i
@@ -116,16 +117,16 @@ def name_init():
 namechains = name_init()
 
 def name_generator(kind: str, amount: int = 10) -> list[str]:
-    """Generates a list of names. Defaults to 10."""
     chain = namechains[kind]
     out = []
+    chainlength = int(chain[0]['chainlength'])
     for _ in range(int(amount)):
-        name = "#"*grouplen
+        name = "#"*chainlength
         name += random.choices(list(chain[name].keys()), weights=list(chain[name].values()))[0] #same thing as in the loop, done once so it doesn't end with # immediately
         while True:
             while True:
-                name += random.choices(list(chain[name[-grouplen:]].keys()),
-                                weights=list(chain[name[-grouplen:]].values()))[0]
+                name += random.choices(list(chain[name[-chainlength:]].keys()),
+                                weights=list(chain[name[-chainlength:]].values()))[0]
                 if name[-1] == "#":
                     if random.random() < len(name) / 16 - 1 / 16:  # end it
                         break
