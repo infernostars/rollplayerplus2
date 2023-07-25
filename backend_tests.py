@@ -40,5 +40,6 @@ class TestBackend(unittest.TestCase):
         sync_server_option = config.sync_server
         self.assertGreater(int(sync_server_option), 0, "Config value read failed")
 
+
 if __name__ == '__main__':
     unittest.main()

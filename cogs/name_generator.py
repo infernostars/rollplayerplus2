@@ -12,7 +12,7 @@ from os.path import splitext
 
 
 
-class NameGeneratorCog(commands.Cog, group_name="generators"):
+class NameGeneratorCog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
