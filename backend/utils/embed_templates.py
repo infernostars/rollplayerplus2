@@ -3,11 +3,11 @@ import discord
 from backend.config import embed_footer, embed_color, embed_url
 
 
-def embed_template(title: str, description: str):
+def embed_template(title: str, description: str or None):
     """Creates an Embed with the default color with provided title and description."""
     _embed_template = discord.Embed(
         title=title,
-        description=description,
+        description=description if description else {},  # no required description
         color=embed_color,
         url=embed_url
     )
