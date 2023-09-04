@@ -2,13 +2,13 @@
 from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template, error_template
 from backend.utils.database import userdb, create_new_user
-from backend.utils.rolling import dice_creator, dice_error
+from backend.utils.rolling import dice_creator
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from tinydb import TinyDB, Query
+from tinydb import Query
 
 
 class TestCog(commands.GroupCog, group_name="testing"):
@@ -72,8 +72,7 @@ class TestCog(commands.GroupCog, group_name="testing"):
         dice_raw_format = ", ".join([f"{x}" for x in dice_result[0][1]])
         embed = embed_template("You rolled...")
         embed.add_field()
-        await interaction.response.send_message(
-            f"{dice_result[0]} raw ({dice_raw_format}); {dice_result[1]} with bonuses")
+        await interaction.response.send_message(f"{dice_result[0]} raw ({dice_raw_format}); {dice_result[1]} with bonuses")
 
 
 # The `setup` function is required for the cog to work

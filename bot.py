@@ -15,6 +15,7 @@ class RollplayerBot(commands.Bot):
 
         super().__init__(*args, **kwargs)
 
+
     async def setup_hook(self) -> None:
         print(os.listdir('./cogs'))
         for file in os.listdir('./cogs'):  # load cogs

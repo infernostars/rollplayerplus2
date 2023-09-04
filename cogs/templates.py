@@ -20,7 +20,7 @@ class TemplatesCog(commands.GroupCog, group_name="template"):
     # Use @command.Cog.listener() for an event-listener (on_message, on_ready, etc.)
     @commands.Cog.listener()
     async def on_ready(self):
-        log.info("Cog: math loaded")
+        log.info("Cog: templates loaded")
 
     @app_commands.command(name="create")
     async def create(self, interaction: discord.Interaction, name: str, template: str):

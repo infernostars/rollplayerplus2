@@ -2,16 +2,11 @@
 from typing import Union
 
 from backend.utils.logging import log
-from backend.utils.embed_templates import embed_template, error_template
-from backend.utils.name_generation import name_generator
-from backend.utils.rolling import dice_creator, dice_error
-from backend.utils.text_manipulation import plural
 
 import discord
 from discord import app_commands
 from discord.ext import commands
-from os import listdir
-from os.path import splitext
+
 
 
 class CreditsCog(commands.Cog):

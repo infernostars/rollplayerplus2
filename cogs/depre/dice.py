@@ -6,8 +6,6 @@ from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template, error_template
 from backend.utils.rolling import dice_creator
 
-from bot import bot
-
 import discord
 from discord import app_commands
 from discord.ext import commands
