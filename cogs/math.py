@@ -13,7 +13,7 @@ from discord.ext import commands
 import cexprtk
 
 
-class MathCog(commands.Cog):
+class MathCog(commands.GroupCog, group_name="math"):
     def __init__(self, client):
         self.client = client
 
@@ -22,8 +22,8 @@ class MathCog(commands.Cog):
     async def on_ready(self):
         log.info("Cog: math loaded")
 
-    @app_commands.command(name="math")
-    async def math(self, interaction: discord.Interaction, equation: str):
+    @app_commands.command(name="eval")
+    async def eval(self, interaction: discord.Interaction, equation: str):
         """
         Solves math equation!
 

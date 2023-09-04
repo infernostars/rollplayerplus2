@@ -28,7 +28,7 @@ class NameGeneratorCog(commands.Cog):
                           # "greek_city.txt" -> Choice("Greek City","greek_city")
                           [app_commands.Choice(name=splitext(i)[0].replace("_", " ").title(), value=splitext(i)[0]) for
                            i in choices])
-    async def test_embed(self, interaction: discord.Interaction, kind: app_commands.Choice[str], amount: int = 10):
+    async def names(self, interaction: discord.Interaction, kind: app_commands.Choice[str], amount: int = 10):
         """
         Generate randomized names! Capped between 1 and 25.
 

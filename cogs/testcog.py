@@ -1,11 +1,13 @@
 # Importing our custom variables/functions from backend
 from backend.utils.logging import log
-from backend.utils.embed_templates import embed_template, error_template
+from backend.utils.embed_templates import embed_template
+from backend.utils.files import userdb, create_new_user
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
+from tinydb import TinyDB, Query
 
 class TestCog(commands.GroupCog, group_name="testing"):
     def __init__(self, client):
@@ -16,8 +18,6 @@ class TestCog(commands.GroupCog, group_name="testing"):
     async def on_ready(self):
         log.info("Cog: testing loaded")
 
-    # Use @commands.slash_command() for a slash-command
-    # I recommend using only slash-commands for your bot.
     @app_commands.command(name="ping")
     async def ping(self, interaction: discord.Interaction):
         """
@@ -41,6 +41,26 @@ class TestCog(commands.GroupCog, group_name="testing"):
         """
         error_embed = error_template("Oops! Something went wrong!")
         await interaction.response.send_message(embeds=[error_embed])
+
+    @app_commands.command(name="counter")
+    async def counter(self, interaction: discord.Interaction):
+        """
+        Database testing; counts up when used, then pulls from db to get return value.
+        """
+        User = Query()
+        if userdb.contains(User.id == interaction.user.id):
+            try:
+                usercount = userdb.get(User.id == interaction.user.id)["count"]
+            except KeyError as e:
+                usercount = 0
+            usercount += 1
+            userdb.update({"count": usercount}, User.id == interaction.user.id)
+        else:
+            create_new_user(interaction.user.id)
+            userdb.update({"count": 1}, User.id == interaction.user.id)
+        count = userdb.get(User.id == interaction.user.id)["count"]
+        await interaction.response.send_message(f"your counter is {count}")
+
 
 
 # The `setup` function is required for the cog to work
