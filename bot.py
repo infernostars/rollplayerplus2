@@ -5,10 +5,11 @@ from backend.utils.logging import log
 import discord.utils
 from discord.ext import commands
 
-class rollp2Bot(commands.Bot):
+
+class RollplayerBot(commands.Bot):
     def __init__(self,
-        *args,
-        **kwargs):
+                 *args,
+                 **kwargs):
 
         super().__init__(*args, **kwargs)
 
@@ -21,15 +22,18 @@ class rollp2Bot(commands.Bot):
         if should_sync:
             await self.tree.sync(guild=bot.get_guild(sync_server))
 
+
 intents = discord.Intents.default()
 
-bot = rollp2Bot(intents=intents, command_prefix="idontneedacommandprefixsoillsetareallylongone")  # Setting prefix
+bot = RollplayerBot(intents=intents, command_prefix="idontneedacommandprefixsoillsetareallylongone")  # Setting prefix
+
 
 # This is what gets run when the bot stars
 @bot.event
 async def on_ready():
     log.info(f"Bot is ready. Logged in as {bot.user}")
     await bot.change_presence(activity=discord.Game(name=presence))
+
 
 # Run the actual bot
 try:
