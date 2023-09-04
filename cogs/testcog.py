@@ -1,7 +1,8 @@
 # Importing our custom variables/functions from backend
 from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template
-from backend.utils.files import userdb, create_new_user
+from backend.utils.database import userdb, create_new_user
+from backend.utils.rolling import dice_creator, dice_error
 
 import discord
 from discord import app_commands
@@ -61,7 +62,16 @@ class TestCog(commands.GroupCog, group_name="testing"):
         count = userdb.get(User.id == interaction.user.id)["count"]
         await interaction.response.send_message(f"your counter is {count}")
 
-
+    @app_commands.command(name="test_one")
+    async def test_one(self, interaction: discord.Interaction):
+        """
+        Undocumented; testing command for debugging, don't expect anything here to be permanent.
+        """
+        dice_result = dice_creator("2d100+1i[1;+100]").roll()
+        dice_raw_format = ", ".join([f"{x}" for x in dice_result[0][1]])
+        embed = embed_template("You rolled...")
+        embed.add_field()
+        await interaction.response.send_message(f"{dice_result[0]} raw ({dice_raw_format}); {dice_result[1]} with bonuses")
 
 # The `setup` function is required for the cog to work
 # Don't change anything in this function, except for the

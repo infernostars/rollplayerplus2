@@ -1,13 +1,15 @@
+from typing import Union
+
 import discord
 
 from backend.config import embed_footer, embed_color, embed_url
 
 
-def embed_template(title: str, description: str or None):
+def embed_template(title: str, description: Union[str, None] = None):
     """Creates an Embed with the default color with provided title and description."""
     _embed_template = discord.Embed(
         title=title,
-        description=description if description else {},  # no required description
+        description=description if description else "",  # no required description
         color=embed_color,
         url=embed_url
     )
