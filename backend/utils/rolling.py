@@ -1,18 +1,18 @@
 import random
 import re
 from typing import List
+from bot import bot
 
 operations = ["+", "-", "/", "*"]  # supported operations in python
-dice_error = None
-
 
 def dice_error_handler(id, description, exception="none"):
-    dice_error = [id, description]
+    # bot.dice_error = [id, description]
     print(f"{id}: {description}")
     pass
 
 
 class Bonus:
+
     def __init__(self, operation, amount):
         if operation in operations:
             self.operation = operation
@@ -93,6 +93,7 @@ def dice_creator(string):
     if string == "d":
         return created_dice
     split_number = remaining_string.split("d", 1)
+    print(split_number)
     try:
         created_dice.amount = int(split_number[0])
         remaining_string = split_number[1]

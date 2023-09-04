@@ -11,7 +11,6 @@ def embed_template(title: str, description: Union[str, None] = None):
         title=title,
         description=description if description else "",  # no required description
         color=embed_color,
-        url=embed_url
     )
 
     _embed_template.set_footer(text=embed_footer)
@@ -24,7 +23,6 @@ def error_template(description: str) -> discord.Embed:
         title="Error!",
         description=description,
         color=0xff0000,
-        url=embed_url
     )
 
     _error_template.set_footer(text=embed_footer)

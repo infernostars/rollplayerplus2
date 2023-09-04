@@ -7,6 +7,8 @@ from discord.ext import commands
 
 
 class RollplayerBot(commands.Bot):
+    # dice_error = None
+
     def __init__(self,
                  *args,
                  **kwargs):
