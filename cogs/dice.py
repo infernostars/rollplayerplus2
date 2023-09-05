@@ -4,7 +4,7 @@ from typing import Union
 from backend.classes.dice_formatting_mode import FormattingMode, format_dice_roll
 from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template, error_template
-from backend.utils.rolling import dice_creator
+from backend.utils.rolling import dice_creator, DiceError, remap
 
 import discord
 from discord import app_commands
@@ -39,18 +39,25 @@ class DiceCog(commands.Cog):
         if dice.startswith("s"):
             dice_removed_formatting = dice[1:]
             dice_formatting_mode = FormattingMode.SUM_ONLY
-        dice_result = dice_creator(dice_removed_formatting)
-        #if bot.dice_error is not None:
-        #    await interaction.response.send_message(embed=error_template(f"{bot.dice_error[0]}: {bot.dice_error[1]}"))
-        #    bot.dice_error = None
-        #    print("a")
-        #    return
-        dice_result = dice_result.roll()
+        try:
+            dice_obj = dice_creator(dice_removed_formatting)
+            dice_result = dice_obj.roll()
+        except DiceError as e:
+            await interaction.response.send_message(embed=error_template(f"""## {e.id}
+{e}"""))
+
         embed = embed_template("You rolled...")
         embed.add_field(name=dice, value=format_dice_roll(dice_formatting_mode, dice_result[1]))
         if dice_result[0] != dice_result[1]:
             embed.add_field(name=f"{dice} (raw)", value=format_dice_roll(dice_formatting_mode, dice_result[0]))
         try:
+            try:
+                color_g = int(remap(dice_obj.roll_min()[1][0], dice_obj.roll_max()[1][0], 0, 255, dice_result[1][0]))
+                color_r = int(remap(dice_obj.roll_min()[1][0], dice_obj.roll_max()[1][0], 255, 0, dice_result[1][0]))
+            except:
+                color_g = 128
+                color_r = 128
+            embed.color = discord.Color.from_rgb(color_r, color_g, 0)
             await interaction.response.send_message(embed=embed)
         except Exception as e:
             print(e)

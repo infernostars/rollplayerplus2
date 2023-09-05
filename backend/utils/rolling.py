@@ -1,15 +1,60 @@
 import random
 import re
+from enum import Enum
 from typing import List
-from bot import bot
 
 operations = ["+", "-", "/", "*"]  # supported operations in python
 
-def dice_error_handler(id, description, exception="none"):
-    # bot.dice_error = [id, description]
-    print(f"{id}: {description}")
-    pass
 
+class DiceType(Enum):
+    NORMAL = 0
+    GAUSSIAN = 1
+
+
+class DiceError(Exception):
+    def __init__(self, message, id):
+        super().__init__(message)
+        self.id = id
+
+def dice_error_handler(id, error, exc):
+    raise DiceError(error, id)
+
+def lerp(a: float, b: float, t: float) -> float:
+    """Linear interpolate on the scale given by a to b, using t as the point on that scale.
+    Examples
+    --------
+        50 == lerp(0, 100, 0.5)
+        4.2 == lerp(1, 5, 0.8)
+    """
+    return (1 - t) * a + t * b
+
+
+def unlerp(a: float, b: float, v: float) -> float:
+    """Inverse Linar Interpolation, get the fraction between a and b on which v resides.
+    Examples
+    --------
+        0.5 == inv_lerp(0, 100, 50)
+        0.8 == inv_lerp(1, 5, 4.2)
+    """
+    return (v - a) / (b - a)
+
+
+def remap(i_min: float, i_max: float, o_min: float, o_max: float, v: float) -> float:
+    """Remap values from one linear scale to another, a combination of lerp and inv_lerp.
+    i_min and i_max are the scale on which the original value resides,
+    o_min and o_max are the scale to which it should be mapped.
+    Examples
+    --------
+        45 == remap(0, 100, 40, 50, 50)
+        6.2 == remap(1, 5, 3, 7, 4.2)
+    """
+    return lerp(o_min, o_max, unlerp(i_min, i_max, v))
+
+
+def random_gaussian(min, max):
+    mu = (min + max) / 2
+    sigma = (max - min) / 5
+    return round(random.gauss(mu, sigma), 2)
 
 class Bonus:
 
@@ -50,12 +95,13 @@ class MarkedBonus:
 
 class Dice:
 
-    def __init__(self, amount: int, low: int, high: int, modifiers: List[Bonus], imodifiers: List[MarkedBonus]):
+    def __init__(self, amount: int, low: int, high: int, modifiers: List[Bonus], imodifiers: List[MarkedBonus], rolltype: DiceType):
         self.amount = amount
         self.low = low
         self.high = high
         self.modifiers = modifiers
         self.imodifiers = imodifiers
+        self.rolltype = rolltype
 
     def generate_random_array(self):
         random_array = []
@@ -63,11 +109,51 @@ class Dice:
             random_array.append(random.randint(self.low, self.high))
         return random_array
 
+    def generate_random_gaussian_array(self):
+        random_array = []
+        for _ in range(self.amount):
+            random_array.append(random_gaussian(self.low, self.high))
+        return random_array
+
+    def generate_max_array(self):
+        random_array = []
+        for _ in range(self.amount):
+            random_array.append(self.high)
+        return random_array
+
+    def generate_min_array(self):
+        random_array = []
+        for _ in range(self.amount):
+            random_array.append(self.low)
+        return random_array
+
     def swap_extremes(self):
         self.low, self.high = self.high, self.low
 
     def roll(self):
-        raw = self.generate_random_array()
+        match self.rolltype:
+            case DiceType.NORMAL:
+                raw = self.generate_random_array()
+            case DiceType.GAUSSIAN:
+                raw = self.generate_random_gaussian_array()
+        self.rolls = raw
+        for i in self.modifiers:
+            self.rolls = i.apply_bonus(self.rolls)
+        for i in self.imodifiers:
+            self.rolls = i.apply_bonus(self.rolls)
+        return [[sum(raw), raw], [sum(self.rolls), self.rolls]]
+
+    def roll_max(self):
+        raw = self.generate_max_array()
+        self.rolls = raw
+        for i in self.modifiers:
+            self.rolls = i.apply_bonus(self.rolls)
+        for i in self.imodifiers:
+            self.rolls = i.apply_bonus(self.rolls)
+        return [[sum(raw), raw], [sum(self.rolls), self.rolls]]
+
+    def roll_min(self):
+        raw = self.generate_min_array()
         self.rolls = raw
         for i in self.modifiers:
             self.rolls = i.apply_bonus(self.rolls)
@@ -85,17 +171,23 @@ def iterate_until_marker(lst):
 
 def dice_creator(string):
     remaining_string = string
-    created_dice = Dice(1, 1, 100, [], [])
+    created_dice = Dice(1, 1, 100, [], [], DiceType.NORMAL)
 
     # initialization section completed
-    if string == "":
+    if remaining_string.startswith("g"):
+        created_dice.rolltype = DiceType.GAUSSIAN
+        remaining_string = remaining_string[1:]
+    if remaining_string == "":
         return created_dice
-    if string == "d":
+    if remaining_string == "d":
         return created_dice
     split_number = remaining_string.split("d", 1)
     print(split_number)
     try:
-        created_dice.amount = int(split_number[0])
+        if split_number[0] == "":
+            created_dice.amount = 1
+        else:
+            created_dice.amount = int(split_number[0])
         remaining_string = split_number[1]
     except Exception as e:
         dice_error_handler("0a", f"amount of dice could not be coerced into an int", e)

@@ -12,6 +12,8 @@ class FormattingMode(Enum):
 def format_dice_roll(mode: FormattingMode, roll: list):
     match mode:
         case FormattingMode.DEFAULT:
+            if len(roll[1]) == 1:
+                return f"{roll[0]}"
             return f"{roll[0]} (total: {format_dice_roll(FormattingMode.LIST_ONLY, roll)})"
         case FormattingMode.LIST_ONLY:
             return ", ".join([f"{x}" for x in roll[1]])
