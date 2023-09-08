@@ -14,7 +14,7 @@ def format_dice_roll(mode: FormattingMode, roll: list):
         case FormattingMode.DEFAULT:
             if len(roll[1]) == 1:
                 return f"{roll[0]}"
-            return f"{roll[0]} (total: {format_dice_roll(FormattingMode.LIST_ONLY, roll)})"
+            return f"{format_dice_roll(FormattingMode.LIST_ONLY, roll)} (total: **{roll[0]}**)"
         case FormattingMode.LIST_ONLY:
             return ", ".join([f"{x}" for x in roll[1]])
         case FormattingMode.SUM_ONLY:

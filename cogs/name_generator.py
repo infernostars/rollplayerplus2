@@ -2,6 +2,7 @@
 from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template
 from backend.utils.name_generation import name_generator
+from backend.utils.roblox_api import get_random_roblox_username
 from backend.utils.text_manipulation import plural
 
 import discord
@@ -43,6 +44,13 @@ class NameGeneratorCog(commands.Cog):
         embed = embed_template(f""" {plural("name", amount)} generated!""",
                                "\n".join([name.title() for name in name_generator(kind.value, amount)]))
         await interaction.response.send_message(embeds=[embed])
+
+    @app_commands.command(name="username")
+    async def username(self, interaction: discord.Interaction):
+        await interaction.response.send_message(embeds=[embed_template("Roblox username generated!",
+                                                                      get_random_roblox_username())])
+
+
 
 
 async def setup(client):
