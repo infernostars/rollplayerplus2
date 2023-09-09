@@ -1,7 +1,7 @@
 # Importing our custom variables/functions from backend
 from typing import Union
 
-from backend.classes.dice_formatting_mode import FormattingMode, format_dice_roll
+from backend.classes.dice_formatting_mode import FormattingMode, format_dice_roll, autoformatter
 from backend.utils.logging import log
 from backend.utils.embed_templates import embed_template, error_template
 from backend.utils.rolling import dice_creator, DiceError, remap
@@ -36,18 +36,8 @@ class DiceCog(commands.Cog):
         if dice_set is None:
             split_dice = ["1d100"]
         for dice in split_dice:
-            dice_removed_formatting = dice
             print(dice)
-            dice_formatting_mode = FormattingMode.DEFAULT
-            if dice.startswith("r"):
-                dice_removed_formatting = dice[1:]
-                dice_formatting_mode = FormattingMode.ROWS
-            if dice.startswith("l"):
-                dice_removed_formatting = dice[1:]
-                dice_formatting_mode = FormattingMode.LIST_ONLY
-            if dice.startswith("s"):
-                dice_removed_formatting = dice[1:]
-                dice_formatting_mode = FormattingMode.SUM_ONLY
+            dice_removed_formatting, dice_formatting_mode = autoformatter(dice)
             try:
                 dice_obj = dice_creator(dice_removed_formatting)
                 dice_result = dice_obj.roll()

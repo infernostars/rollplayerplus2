@@ -48,7 +48,7 @@ class NameGeneratorCog(commands.Cog):
     @app_commands.command(name="username")
     async def username(self, interaction: discord.Interaction):
         await interaction.response.send_message(embeds=[embed_template("Roblox username generated!",
-                                                                      get_random_roblox_username())])
+                                                                       get_random_roblox_username())])
 
 
 

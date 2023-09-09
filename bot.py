@@ -1,5 +1,6 @@
 import os
 import sys
+import nest_asyncio
 from backend.config import discord_token, sync_server, should_sync, presence
 from backend.utils.logging import log
 import discord.utils
@@ -7,15 +8,6 @@ from discord.ext import commands
 
 
 class RollplayerBot(commands.Bot):
-    # dice_error = None
-
-    def __init__(self,
-                 *args,
-                 **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-
     async def setup_hook(self) -> None:
         print(os.listdir('./cogs'))
         for file in os.listdir('./cogs'):  # load cogs
@@ -39,11 +31,12 @@ async def on_ready():
 
 
 # Run the actual bot
-try:
-    bot.run(discord_token)
-except discord.LoginFailure:
-    log.critical("Invalid Discord Token. Please check your config file.")
-    sys.exit()
-except Exception as err:
-    log.critical(f"Error while connecting to Discord. Error: {err}")
-    sys.exit()
+if __name__ == "__main__":
+    try:
+        bot.run(discord_token)
+    except discord.LoginFailure:
+        log.critical("Invalid Discord Token. Please check your config file.")
+        sys.exit()
+    except Exception as err:
+        log.critical(f"Error while connecting to Discord. Error: {err}")
+        sys.exit()

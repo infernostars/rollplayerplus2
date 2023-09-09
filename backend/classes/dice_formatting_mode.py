@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List
 
+from backend.utils.rolling import dice_creator
+
 
 class FormattingMode(Enum):
     DEFAULT = 0
@@ -41,4 +43,16 @@ def format_dice_roll(mode: FormattingMode, roll: list):
             return formatted_string
 
 
-
+def autoformatter(dice: str):
+    dice_removed_formatting = dice
+    dice_formatting_mode = FormattingMode.DEFAULT
+    if dice.startswith("r"):
+        dice_removed_formatting = dice[1:]
+        dice_formatting_mode = FormattingMode.ROWS
+    if dice.startswith("l"):
+        dice_removed_formatting = dice[1:]
+        dice_formatting_mode = FormattingMode.LIST_ONLY
+    if dice.startswith("s"):
+        dice_removed_formatting = dice[1:]
+        dice_formatting_mode = FormattingMode.SUM_ONLY
+    return [dice_removed_formatting, dice_formatting_mode]
