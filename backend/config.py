@@ -15,14 +15,15 @@ try:
     # Getting the variables from `[general]`
     log_level: str = config.get('general', 'log_level')
     presence: str = config.get('general', 'presence')
+    version: str = config.get('general', 'version', fallback="unknown")
 
     # Getting the variables from `[secret]`
     discord_token: str = config.get('secret', 'discord_token')
 
     # Getting the variables from `[discord]`
     embed_footer: str = config.get('discord', 'embed_footer')
-    sync_server: str = config.getint('discord', 'sync_server', fallback=0)
-    should_sync: str = config.getboolean('discord', 'should_sync', fallback=False)
+    sync_server: int = config.getint('discord', 'sync_server', fallback=0)
+    should_sync: bool = config.getboolean('discord', 'should_sync', fallback=False)
     embed_color: int = int(config.get('discord', 'embed_color'), base=16)
     embed_url: str = config.get('discord', 'embed_url')
 

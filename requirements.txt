@@ -5,3 +5,4 @@ inflect>=6.0.0
 tinydb>=4.8.0
 requests==2.31.0
 nest_asyncio==1.5.7
+numpy>=1.25.0

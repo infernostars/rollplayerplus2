@@ -1,7 +1,9 @@
 # Importing our custom variables/functions from backend
+from typing import Union
+
 from cexprtk import ParseException
 
-import bot
+from bot import bot
 import math, statistics, re
 import random
 
@@ -16,7 +18,6 @@ from discord.ext import commands
 import cexprtk
 
 from backend.utils.tag_parsing import process_tag_string
-from bot import fetch_user
 
 class TagsCog(commands.GroupCog, group_name="tags"):
     def __init__(self, client):
@@ -77,11 +78,11 @@ class TagsCog(commands.GroupCog, group_name="tags"):
         """
         try:
             tag = get_tag_by_name(name)
-            # username = await bot.bot.fetch_user(tag["creator_id"])
+            username = await self.client.fetch_user(tag["creator_id"])
             await interaction.response.send_message(
                 embeds=[embed_template(f"info about {name}",
                 f"""
-                ### made by {"-"} 
+                ### made by {username} 
                 ### on <t:{int(tag["created"]/1_000_000_000)}:f>
                 ### last updated <t:{int(tag["updated"]/1_000_000_000)}:f>
                 ### {tag["uses"]} uses
@@ -118,7 +119,7 @@ class TagsCog(commands.GroupCog, group_name="tags"):
             return
 
     @app_commands.command(name="run")
-    async def run(self, interaction: discord.Interaction, name: str):
+    async def run(self, interaction: discord.Interaction, name: str, args: Union[str, None]):
         """
         Runs a tag.
 
@@ -126,15 +127,40 @@ class TagsCog(commands.GroupCog, group_name="tags"):
         -----------
         name: str
             Name of the tag.
+        args: str
+            Arguments, seperated by spaces [i.e. `1 2`]
         """
         try:
             tag = get_tag_by_name(name)["template"]
-            tag = process_tag_string(tag)
+            if args == None:
+                final_args = []
+            else:
+                final_args = args.split(" ")
+            tag = process_tag_string(tag, final_args)
             await interaction.response.send_message(tag)
             increment_tag_uses(name)
         except NotInDatabaseError as e:
             await interaction.response.send_message(embeds=[error_template(f"The tag {name} doesn't exist!")])
             return
+
+    @app_commands.command(name="exec")
+    async def exec(self, interaction: discord.Interaction, code: str, args: Union[str, None]):
+        """
+        Runs a tag from code only..
+
+        Parameters
+        -----------
+        code: str
+            Code of the tag.
+        args: str
+            Arguments, seperated by spaces [i.e. `1 2`]
+        """
+        if args == None:
+            final_args = []
+        else:
+            final_args = args.split(" ")
+        tag = process_tag_string(code, final_args)
+        await interaction.response.send_message(tag)
 
 
 async def setup(client):

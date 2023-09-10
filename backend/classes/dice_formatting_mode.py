@@ -20,7 +20,7 @@ def format_dice_roll(mode: FormattingMode, roll: list):
         case FormattingMode.LIST_ONLY:
             return ", ".join([f"{x}" for x in roll[1]])
         case FormattingMode.SUM_ONLY:
-            return roll[0]
+            return str(roll[0])
         case FormattingMode.ROWS:
             # thanks chatgpt
             # Initialize an empty string to store the formatted result

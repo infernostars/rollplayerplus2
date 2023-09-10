@@ -8,12 +8,15 @@ from discord.ext import commands
 
 
 class RollplayerBot(commands.Bot):
+    coglist = []
     async def setup_hook(self) -> None:
         print(os.listdir('./cogs'))
         for file in os.listdir('./cogs'):  # load cogs
             if file.endswith('.py'):
                 print(file)
                 await bot.load_extension(f'cogs.{file[:-3]}')
+                self.coglist.append(file[:-3])
+                print(self.coglist)
         if should_sync:
             await self.tree.sync(guild=bot.get_guild(sync_server))
 

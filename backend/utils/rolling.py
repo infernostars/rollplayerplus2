@@ -1,5 +1,6 @@
 import random
 import re
+import time
 from enum import Enum
 from typing import List
 
@@ -131,6 +132,7 @@ class Dice:
         self.low, self.high = self.high, self.low
 
     def roll(self):
+        random.seed(time.time_ns())
         match self.rolltype:
             case DiceType.NORMAL:
                 raw = self.generate_random_array()
