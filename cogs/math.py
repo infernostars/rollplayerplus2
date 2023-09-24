@@ -40,7 +40,7 @@ class MathCog(commands.GroupCog, group_name="math"):
         solution = False
         symbol_table = cexprtk.Symbol_Table(variables={"pi": math.pi, "e": math.e}, functions={"rand": cexprtk_random})
 
-        try:    # use the Expression class instead with the updated symbol_table
+        try:  # use the Expression class instead with the updated symbol_table
             expr = cexprtk.Expression(equation, symbol_table)
             solution = expr()  # to evaluate the expression just call it
         except ParseException as e:
@@ -53,7 +53,6 @@ class MathCog(commands.GroupCog, group_name="math"):
         if type(solution) == float:
             if solution % 1 == 0:
                 solution = int(solution)
-
 
         # Use `await interaction.response.send_message()` to send a message
         await interaction.response.send_message(f"answer: **{solution}**")

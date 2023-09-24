@@ -235,7 +235,7 @@ def dice_creator(string):
     for markerPair in matches:
         split_pair = markerPair.split(";")
         to_match = split_pair[0].split(",")
-        split_operation = re.split('([^0-9\.]+)', split_pair[1])
+        split_operation = re.split(r'([^0-9\.]+)', split_pair[1])
         created_dice.imodifiers.append(MarkedBonus(to_match, split_operation[1], split_operation[2]))
 
     # done! :D

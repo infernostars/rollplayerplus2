@@ -17,13 +17,19 @@ class RollplayerBot(commands.Bot):
                 await bot.load_extension(f'cogs.{file[:-3]}')
                 self.coglist.append(file[:-3])
                 print(self.coglist)
+        for file in os.listdir('cogs/roleplay'):  # load cogs
+            if file.endswith('.py'):
+                print(file)
+                await bot.load_extension(f'cogs.roleplay.{file[:-3]}')
+                self.coglist.append(f"roleplay.{file[:-3]}")
+                print(self.coglist)
         if should_sync:
             await self.tree.sync(guild=bot.get_guild(sync_server))
 
 
 intents = discord.Intents.default()
 
-bot = RollplayerBot(intents=intents, command_prefix="idontneedacommandprefixsoillsetareallylongone")  # Setting prefix
+bot = RollplayerBot(intents=intents, command_prefix="r!")  # Setting prefix
 
 
 # This is what gets run when the bot stars

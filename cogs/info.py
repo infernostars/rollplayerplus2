@@ -30,12 +30,12 @@ class InfoCog(commands.GroupCog, group_name="info"):
     used them for most of the name generation
                                                     """)
 
-        @app_commands.command(name="version")
-        async def version(self, interaction: discord.Interaction):
-            """
-            Get the bot's version.
-            """
-            await interaction.response.send_message(f"""
+    @app_commands.command(name="version")
+    async def version(self, interaction: discord.Interaction):
+        """
+        Get the bot's version.
+        """
+        await interaction.response.send_message(f"""
     Rollplayer, patron saint of Vorigaria, version **{version}**""")
 
     @app_commands.command(name="cogs")
