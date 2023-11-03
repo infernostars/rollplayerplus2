@@ -17,7 +17,7 @@ class SilverWindsCog(commands.GroupCog, group_name="silver"):
         log.info("Cog: silver winds loaded")
 
     @app_commands.command(name="mine")
-    async def mine(self, interaction: discord.Interaction, depth: int, picklevel: int):
+    async def mine(self, interaction: discord.Interaction, depth: int, picklevel: int, times: int = 32):
         """
         Replies with ores you can mine.
 
@@ -25,7 +25,7 @@ class SilverWindsCog(commands.GroupCog, group_name="silver"):
             depth: Sets the depth you're mining at, between +256 and -512.
             picklevel: Pickaxe level, currently between 1-10.
         """
-        mine_event = MineEvent(depth, picklevel, 1)
+        mine_event = MineEvent(depth, picklevel, times)
         mine_results = mine_event.mine()
         if not mine_results:
             merged_string = "Nothing! :D"

@@ -1,14 +1,20 @@
+import asyncio
 import os
 import sys
-import nest_asyncio
-from backend.config import discord_token, sync_server, should_sync, presence
-from backend.utils.logging import log
+
+import threading
+from asyncio import create_task
+
 import discord.utils
 from discord.ext import commands
+
+from backend.config import discord_token, sync_server, should_sync, presence, version
+from backend.utils.logging import log
 
 
 class RollplayerBot(commands.Bot):
     coglist = []
+
     async def setup_hook(self) -> None:
         print(os.listdir('./cogs'))
         for file in os.listdir('./cogs'):  # load cogs
@@ -27,7 +33,7 @@ class RollplayerBot(commands.Bot):
             await self.tree.sync(guild=bot.get_guild(sync_server))
 
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 
 bot = RollplayerBot(intents=intents, command_prefix="r!")  # Setting prefix
 

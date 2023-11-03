@@ -20,8 +20,8 @@ class DiceCog(commands.Cog):
     async def on_ready(self):
         log.info("Cog: dice loaded")
 
-    @app_commands.command(name="roll")
-    async def roll(self, interaction: discord.Interaction, dice_set: Union[str, None]):
+    @commands.hybrid_command(name="roll")
+    async def roll(self, ctx: commands.Context, *, dice_set: Union[str, None]):
         """
         Roll a dice! By default, rolls a 1d100.
         :param dice_set: Defaults to a singular 1d100. Add spaces to roll multiple sets of dice [i.e. `1d100 1d200`]
@@ -42,11 +42,12 @@ class DiceCog(commands.Cog):
                 dice_obj = dice_creator(dice_removed_formatting)
                 dice_result = dice_obj.roll()
             except DiceError as e:
-                await interaction.response.send_message(embed=error_template(f"""## {e.id}\n{e}"""))
+                await ctx.send(embed=error_template(f"""## {e.id}\n{e}"""))
                 return
             embed.add_field(name=dice, value=format_dice_roll(dice_formatting_mode, dice_result[1]), inline=False)
             if dice_result[0] != dice_result[1]:
-                embed.add_field(name=f"{dice} (raw)", value=format_dice_roll(dice_formatting_mode, dice_result[0]), inline=True)
+                embed.add_field(name=f"{dice} (raw)", value=format_dice_roll(dice_formatting_mode, dice_result[0]),
+                                inline=True)
             try:
                 color_g = int(remap(dice_obj.roll_min()[1][0], dice_obj.roll_max()[1][0], 0, 255, dice_result[1][0]))
                 color_r = int(remap(dice_obj.roll_min()[1][0], dice_obj.roll_max()[1][0], 255, 0, dice_result[1][0]))
@@ -60,10 +61,11 @@ class DiceCog(commands.Cog):
         color_r_avg = int(sum(color_red_list) / len(color_red_list))
         embed.color = discord.Color.from_rgb(color_r_avg, color_g_avg, 0)
         try:
-            await interaction.response.send_message(embed=embed)
+            await ctx.send(embed=embed)
         except Exception as e:
             print(e)
-            await interaction.response.send_message(embed=error_template("Your roll's result was too long!"))
+            await ctx.send(embed=error_template("Your roll's result was too long!"))
+
 
 async def setup(client):
     await client.add_cog(DiceCog(client))
